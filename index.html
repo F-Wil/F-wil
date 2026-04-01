@@ -15,13 +15,39 @@
             width: 100%;
             height: 15%;
             background-color: #f0f0f0;
-            padding: 10px;
+            padding: 15px;
             box-sizing: border-box;
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 20px;
             align-items: center;
             border-top: 1px solid #ccc;
+        }
+        .filter-label {
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 16px;
+        }
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .color-indicator {
+            width: 16px;
+            height: 16px;
+            border-radius: 2px;
+            border: 1px solid #333;
+        }
+        .filter-item input[type="checkbox"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+        .filter-item label {
+            cursor: pointer;
+            font-size: 14px;
+            margin: 0;
         }
         button {
             padding: 8px 15px;
@@ -35,10 +61,6 @@
         button:hover {
             background-color: #0056b3;
         }
-        .filter-label {
-            font-weight: bold;
-            margin-right: 10px;
-        }
     </style>
 </head>
 <body>
@@ -46,9 +68,20 @@
 <div id="map"></div>
 <div id="filter-controls">
     <span class="filter-label">Filters:</span>
-    <button onclick="filterByProperty('Wendeschleife', true)">Show Turnaround Loops</button>
-    <button onclick="filterByProperty('Betriebshof', true)">Show Depots</button>
-    <button onclick="resetFilter()">Show All</button>
+    
+    <div class="filter-item">
+        <span class="color-indicator" style="background-color: #FF0000;"></span>
+        <input type="checkbox" id="betriebshof-checkbox" onchange="toggleFilter('Betriebshof', this.checked)">
+        <label for="betriebshof-checkbox">Betriebshof (Depots)</label>
+    </div>
+    
+    <div class="filter-item">
+        <span class="color-indicator" style="background-color: #0000FF;"></span>
+        <input type="checkbox" id="wendeschleife-checkbox" onchange="toggleFilter('Wendeschleife', this.checked)">
+        <label for="wendeschleife-checkbox">Wendeschleife (Turnarounds)</label>
+    </div>
+    
+    <button onclick="resetAllFilters()">Show All</button>
 </div>
 
 <!-- Leaflet JS -->
