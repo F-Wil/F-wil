@@ -47,7 +47,7 @@ function filterByProperty(propertyName, value) {
                 layer.setStyle({ opacity: 1 });
                 map.addLayer(layer);
             } else {
-                layer.setStyle({ opacity: 1 });
+                layer.setStyle({ opacity: 0.7 });
             }
         }
     });
