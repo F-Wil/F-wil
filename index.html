@@ -1,97 +1,82 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>Custom Map</title>
-
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" 
-          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F-Wil - Hamburg Transit Data</title>
     <style>
-        html, body { height: 100%; margin: 0; }
-        #map { width: 100%; height: 85%; }
-        #filter-controls {
-            width: 100%;
-            height: 15%;
-            background-color: #f0f0f0;
-            padding: 15px;
-            box-sizing: border-box;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            align-items: center;
-            border-top: 1px solid #ccc;
-        }
-        .filter-label {
-            font-weight: bold;
-            margin-right: 15px;
-            font-size: 16px;
-        }
-        .filter-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .color-indicator {
-            width: 16px;
-            height: 16px;
-            border-radius: 2px;
-            border: 1px solid #333;
-        }
-        .filter-item input[type="checkbox"] {
-            cursor: pointer;
-            width: 18px;
-            height: 18px;
-        }
-        .filter-item label {
-            cursor: pointer;
-            font-size: 14px;
-            margin: 0;
-        }
-        button {
-            padding: 8px 15px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; }
+        nav { background-color: #007bff; padding: 1rem 0; position: sticky; top: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        nav ul { list-style: none; display: flex; justify-content: center; gap: 2rem; max-width: 1200px; margin: 0 auto; padding: 0 1rem; flex-wrap: wrap; }
+        nav a { color: white; text-decoration: none; font-weight: 500; }
+        nav a:hover { text-decoration: underline; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        header { text-align: center; padding: 4rem 2rem; background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); color: white; border-radius: 8px; margin-bottom: 3rem; }
+        header h1 { font-size: 3rem; margin-bottom: 1rem; }
+        header p { font-size: 1.25rem; opacity: 0.95; margin-bottom: 2rem; }
+        .cta-button { display: inline-block; background-color: white; color: #007bff; padding: 1rem 2rem; text-decoration: none; border-radius: 4px; font-size: 1.1rem; font-weight: 600; margin: 1rem; transition: transform 0.2s; }
+        .cta-button:hover { transform: scale(1.05); }
+        .content-section { margin: 3rem 0; padding: 2rem; background-color: #f9f9f9; border-radius: 8px; }
+        .content-section h2 { margin-bottom: 1rem; border-bottom: 3px solid #007bff; padding-bottom: 0.5rem; }
+        .content-section ul { margin-left: 1.5rem; line-height: 1.8; }
+        .content-section li { margin-bottom: 0.5rem; }
+        footer { text-align: center; padding: 2rem; border-top: 1px solid #ccc; margin-top: 3rem; color: #666; }
+        footer a { color: #007bff; text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
 
-<div id="map"></div>
-<div id="filter-controls">
-    <span class="filter-label">Filters:</span>
-    
-    <div class="filter-item">
-        <span class="color-indicator" style="background-color: #FF0000;"></span>
-        <input type="checkbox" id="betriebshof-checkbox" onchange="toggleFilter('Betriebshof', this.checked)">
-        <label for="betriebshof-checkbox">Betriebshof (Depots)</label>
-    </div>
-    
-    <div class="filter-item">
-        <span class="color-indicator" style="background-color: #0000FF;"></span>
-        <input type="checkbox" id="wendeschleife-checkbox" onchange="toggleFilter('Wendeschleife', this.checked)">
-        <label for="wendeschleife-checkbox">Wendeschleife (Turnarounds)</label>
-    </div>
-    
-    <button onclick="resetAllFilters()">Show All</button>
+<nav>
+    <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="map.html">Interactive Map</a></li>
+        <li><a href="impressum.html">Impressum</a></li>
+        <li><a href="https://github.com/F-Wil/F-wil">GitHub</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+    <header>
+        <h1>🗺️ F-Wil Hamburg Transit Data</h1>
+        <p>Explore Hamburg's bus infrastructure with interactive mapping</p>
+        <a href="map.html" class="cta-button">View the Map →</a>
+    </header>
+
+    <section class="content-section">
+        <h2>Welcome</h2>
+        <p>
+            F-Wil provides an interactive map of Hamburg's transit infrastructure, including bus depots (Betriebshöfe) 
+            and turnaround loops (Wendeschleifen). This project visualizes geographic data about the city's public transportation network.
+        </p>
+    </section>
+
+    <section class="content-section">
+        <h2>Features</h2>
+        <ul>
+            <li>🗺️ Interactive map powered by Leaflet and OpenStreetMap</li>
+            <li>🔍 Filter by location type (Depots, Turnarounds)</li>
+            <li>📍 Detailed location information on click</li>
+            <li>🌍 Centered on Hamburg, Germany</li>
+        </ul>
+    </section>
+
+    <section class="content-section">
+        <h2>Getting Started</h2>
+        <p>
+            <a href="map.html">Click here to access the interactive map</a>. Use the filter controls to show or hide 
+            specific types of transit infrastructure. Click on any location to see more details.
+        </p>
+    </section>
 </div>
 
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<!-- Your own JavaScript -->
-<script src="script.js"></script>
 <footer>
-    <a href="impressum.html">Impressum</a> | 
-    <a href="https://github.com/F-Wil/F-wil">GitHub Repository</a>
+    <p>
+        <a href="impressum.html">Impressum</a> | 
+        <a href="https://github.com/F-Wil/F-wil">GitHub Repository</a>
+    </p>
 </footer>
+
 </body>
 </html>
