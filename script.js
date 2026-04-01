@@ -19,7 +19,7 @@ fetch('data.geojson')
                 return {
                     color: getColorByProperty(feature),
                     weight: 2,
-                    opacity: 0.8
+                    opacity: 1
                 };
             },
             onEachFeature: function (feature, layer) {
@@ -44,10 +44,10 @@ function filterByProperty(propertyName, value) {
         if (layer.feature) {
             const matches = layer.feature.properties[propertyName] === value;
             if (matches) {
-                layer.setStyle({ opacity: 0.8 });
+                layer.setStyle({ opacity: 1 });
                 map.addLayer(layer);
             } else {
-                layer.setStyle({ opacity: 0.2 });
+                layer.setStyle({ opacity: 1 });
             }
         }
     });
@@ -58,7 +58,7 @@ function resetFilter() {
     map.eachLayer(function(layer) {
         if (layer.feature) {
             layer.setStyle({ 
-                opacity: 0.8,
+                opacity: 1,
                 color: getColorByProperty(layer.feature)
             });
         }
