@@ -35,7 +35,7 @@ function getColorByProperty(feature) {
     const props = feature.properties;
     if (props.Betriebshof) return '#FF0000';      // Red for depots
     if (props.Wendeschleife) return '#0000FF';    // Blue for turnaround loops
-    return '#808080';                              // Gray for others
+    return '#000000';                              // Gray for others
 }
 
 // Filter function
