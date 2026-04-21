@@ -192,7 +192,7 @@ fetch('data/sbahnS5stade.geojson')
   });
 
 // Load Straßenbahn data
-fetch('data/Strassenbahn.geojson')
+fetch('data/Straßenbahn.geojson')
   .then(res => res.json())
   .then(data => {
       tramData = data;
