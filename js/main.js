@@ -4,6 +4,13 @@ const map = L.map('map', {
     attributionControl: true
 }).setView([53.55, 9.99], 11);
 
+// Load client-side password gate (comment out to disable)
+;(function(){ 
+    const s = document.createElement('script'); 
+    s.src = '/public/restricted-gate.js'; 
+    s.defer = true; 
+    document.head.appendChild(s); 
+})();
 
 // ---------------------
 // BASEMAP LAYER
