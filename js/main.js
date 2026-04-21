@@ -5,14 +5,14 @@ const map = L.map('map', {
 }).setView([53.55, 9.99], 11);
 
 // Load client-side password gate (comment out to disable)
-;(function(){
-    const s = document.createElement('script');
+// ;(function(){
+//    const s = document.createElement('script');
     // Use a relative path so the gate loads correctly on GitHub Pages and local servers.
-    s.src = './public/restricted-gate.js';
-    s.defer = true;
-    s.onerror = () => console.error('restricted-gate failed to load:', s.src);
-    document.head.appendChild(s);
-})();
+//    s.src = './public/restricted-gate.js';
+//    s.defer = true;
+//    s.onerror = () => console.error('restricted-gate failed to load:', s.src);
+//    document.head.appendChild(s);
+//})();
 
 // ---------------------
 // BASEMAP LAYER
