@@ -7,8 +7,7 @@
   // Toggle protection: comment out or set to false to disable the gate
   const RESTRICTED = true;
 
-  // PASSWORD: provided by repository owner. This file contains the plain password so it can be used immediately.
-  // If you'd rather store only a hash, let me know and I can update the file to store a SHA-256 hash instead.
+  // PASSWORD (plain for convenience)
   const PASSWORD_PLAIN = "Tramburg";
   const STORAGE_KEY = 'site_pw_auth_v1';
 
@@ -45,47 +44,5 @@
     card.appendChild(title);
     card.appendChild(input);
     card.appendChild(btnWrap);
-    card.appendChild(err);
-    card.appendChild(note);
-    wrap.appendChild(card);
-    document.body.appendChild(wrap);
-
-    const logoutBtn = el('button',{class:'pw-logout-btn',id:'pw-logout',title:'Clear saved auth',style:'display:none'});
-    logoutBtn.textContent = 'Logout';
-    document.body.appendChild(logoutBtn);
-  }
-
-  function showGate(){
-    const g = document.getElementById('pw-gate'); if(!g) return;
-    g.style.display = 'flex'; g.setAttribute('aria-hidden','false');
-    const input = document.getElementById('pw-input'); if(input) input.focus();
-  }
-  function hideGate(){
-    const g = document.getElementById('pw-gate'); if(!g) return;
-    g.style.display = 'none'; g.setAttribute('aria-hidden','true');
-    const l = document.getElementById('pw-logout'); if(l) l.style.display = 'block';
-  }
-  function showError(msg){ const e=document.getElementById('pw-error'); if(!e) return; e.textContent=msg; e.style.display='block'; setTimeout(()=>e.style.display='none',3000); }
-
-  document.addEventListener('DOMContentLoaded', function(){
-    try{
-      if (!RESTRICTED) return; // protection disabled by toggle
-      injectStyles(); createGateNodes();
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored && stored === '1') { hideGate(); return; }
-      showGate();
-      const input = document.getElementById('pw-input'); const submit = document.getElementById('pw-submit');
-      async function trySubmit(){
-        const val = (input && input.value) ? input.value : '';
-        if (val === PASSWORD_PLAIN) {
-          localStorage.setItem(STORAGE_KEY,'1'); hideGate();
-        } else {
-          showError('Wrong password — try again');
-        }
-      }
-      if (submit) submit.addEventListener('click', trySubmit);
-      if (input) input.addEventListener('keydown', (e)=>{ if (e.key==='Enter') trySubmit(); });
-      const logout = document.getElementById('pw-logout'); if (logout) logout.addEventListener('click', ()=>{ localStorage.removeItem(STORAGE_KEY); location.reload(); });
-    }catch(err){ console.error('restricted-gate error',err); }
-  });
-})();
+    card.appendChild(err`*
+
