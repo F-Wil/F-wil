@@ -1,82 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>F-Wil - Hamburg Transit Data</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; }
-        nav { background-color: #007bff; padding: 1rem 0; position: sticky; top: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        nav ul { list-style: none; display: flex; justify-content: center; gap: 2rem; max-width: 1200px; margin: 0 auto; padding: 0 1rem; flex-wrap: wrap; }
-        nav a { color: white; text-decoration: none; font-weight: 500; }
-        nav a:hover { text-decoration: underline; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
-        header { text-align: center; padding: 4rem 2rem; background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); color: white; border-radius: 8px; margin-bottom: 3rem; }
-        header h1 { font-size: 3rem; margin-bottom: 1rem; }
-        header p { font-size: 1.25rem; opacity: 0.95; margin-bottom: 2rem; }
-        .cta-button { display: inline-block; background-color: white; color: #007bff; padding: 1rem 2rem; text-decoration: none; border-radius: 4px; font-size: 1.1rem; font-weight: 600; margin: 1rem; transition: transform 0.2s; }
-        .cta-button:hover { transform: scale(1.05); }
-        .content-section { margin: 3rem 0; padding: 2rem; background-color: #f9f9f9; border-radius: 8px; }
-        .content-section h2 { margin-bottom: 1rem; border-bottom: 3px solid #007bff; padding-bottom: 0.5rem; }
-        .content-section ul { margin-left: 1.5rem; line-height: 1.8; }
-        .content-section li { margin-bottom: 0.5rem; }
-        footer { text-align: center; padding: 2rem; border-top: 1px solid #ccc; margin-top: 3rem; color: #666; }
-        footer a { color: #007bff; text-decoration: none; }
-        footer a:hover { text-decoration: underline; }
-    </style>
+  <meta charset="UTF-8">
+  <title> TramTracks: Historisches Straßenbahnnetz Hamburg </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+ <!-- Unbounded Schriftart -->
+<link href="https://fonts.googleapis.com/css2?family=Aleo:wght@400;700&family=Funnel+Display:wght@400;700&family=Funnel+Sans:wght@400;700&family=Inter:wght@400;700&family=Poppins:wght@400;700&family=Raleway:wght@400;700&family=Suse:wght@400;700&family=Unbounded:wght@200..900&display=swap" rel="stylesheet">
+
+<!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <!-- Leaflet Control Geocoder CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"/>
+
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<nav>
-    <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="map.html">Interactive Map</a></li>
-        <li><a href="impressum.html">Impressum</a></li>
-        <li><a href="https://github.com/F-Wil/F-wil">GitHub</a></li>
-    </ul>
-</nav>
-
-<div class="container">
-    <header>
-        <h1>🗺️ F-Wil Hamburg Transit Data</h1>
-        <p>Explore Hamburg's bus infrastructure with interactive mapping</p>
-        <a href="map.html" class="cta-button">View the Map →</a>
-    </header>
-
-    <section class="content-section">
-        <h2>Welcome</h2>
-        <p>
-            F-Wil provides an interactive map of Hamburg's transit infrastructure, including bus depots (Betriebshöfe) 
-            and turnaround loops (Wendeschleifen). This project visualizes geographic data about the city's public transportation network.
-        </p>
-    </section>
-
-    <section class="content-section">
-        <h2>Features</h2>
-        <ul>
-            <li>🗺️ Interactive map powered by Leaflet and OpenStreetMap</li>
-            <li>🔍 Filter by location type (Depots, Turnarounds)</li>
-            <li>📍 Detailed location information on click</li>
-            <li>🌍 Centered on Hamburg, Germany</li>
-        </ul>
-    </section>
-
-    <section class="content-section">
-        <h2>Getting Started</h2>
-        <p>
-            <a href="map.html">Click here to access the interactive map</a>. Use the filter controls to show or hide 
-            specific types of transit infrastructure. Click on any location to see more details.
-        </p>
-    </section>
+<!-- Karte immer ganz hinten -->
+<div id="map">
+  <div id="map-tint"></div>
 </div>
 
-<footer>
-    <p>
-        <a href="impressum.html">Impressum</a> | 
-        <a href="https://github.com/F-Wil/F-wil">GitHub Repository</a>
-    </p>
-</footer>
+<!-- Logo oben mitte -->
+<div id="logo">
+    <h1>TramTracks HH</h1>
+    <h2>Gleisfreie und Hansestadt Hamburg</h2>
+</div>
+
+<!-- Pill-shaped Timeline -->
+<div id="timeline-container">
+  <div id="year-display">1900</div>
+  <div id="timeline-wrapper">
+
+    <div class="timeline-label left">1866</div>
+
+    <div class="timeline-center">
+      <button id="prev-year" class="year-arrow">&larr;</button>
+      <input 
+        type="range"
+        id="timeline"
+        min="1866"
+        max="2026"
+        value="1900"
+        step="1">
+      <button id="next-year" class="year-arrow">&rarr;</button>
+    </div>
+
+    <div class="timeline-label right">Heute</div>
+
+  </div>
+</div>
+
+<!-- Legend -->
+<div id="legend-container">
+  <button id="legend-toggle">Legende</button>
+  <div id="legend-content">
+    <h4>Straßenbahn-Legende</h4>
+    <div class="legend-item">
+      <svg width="50" height="10">
+        <line x1="0" y1="5" x2="50" y2="5" stroke="var(--tram-color)" stroke-width="var(--line-weight)" stroke-dasharray="var(--line-dasharray-pferdebahn)" />
+      </svg>
+      <span>Pferdebahn (gestrichelt)</span>
+    </div>
+    <div class="legend-item">
+      <svg width="50" height="10">
+        <line x1="0" y1="5" x2="50" y2="5" stroke="var(--tram-color)" stroke-width="var(--line-weight)" stroke-dasharray="var(--line-dasharray)" />
+      </svg>
+      <span>Straßenbahn, elektrisch (durchgezogen)</span>
+    </div>
+    <div class="legend-item">
+      <svg width="20" height="20">
+        <circle cx="10" cy="10" r="8" fill="var(--wendeschleife-color)" stroke="var(--wendeschleife-color)" stroke-width="1" fill-opacity="0.8" />
+      </svg>
+      <span>Wendeschleife</span>
+    </div>
+    <div class="legend-item">
+      <svg width="20" height="20">
+        <circle cx="10" cy="10" r="10" fill="var(--betriebshof-color)" stroke="var(--betriebshof-color)" stroke-width="4" fill-opacity="0.8" />
+      </svg>
+      <span>Betriebshof</span>
+    </div>
+  </div>
+</div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- Leaflet Control Geocoder JS -->
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+<script src="js/main.js"></script>
 
 </body>
 </html>
