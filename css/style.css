@@ -33,6 +33,7 @@ html, body {
 :root { 
   /* transit line colors */
   --tram-color: #FA1E41;
+  --nftram-color: #EB6F10;
   --tram-wendeschleife-color: #f36078;
   --ubahn-color: #646EFA;
   --sbahn-color: #05dc80;

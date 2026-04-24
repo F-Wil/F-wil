@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title> TramTracks: Historisches Straßenbahnnetz Hamburg </title>
+  <title> TramTracks: (Historisches) Straßenbahnnetz Hamburg </title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
  <!-- Unbounded Schriftart -->
@@ -24,7 +24,7 @@
 
 <!-- Logo oben mitte -->
 <div id="logo">
-    <h1>TramTracks HH</h1>
+    <h1>Straßenbahn Hamburg</h1>
     <h2>Gleisfreie und Hansestadt Hamburg</h2>
 </div>
 
@@ -41,13 +41,13 @@
         type="range"
         id="timeline"
         min="1866"
-        max="2026"
+        max="2065"
         value="1900"
         step="1">
       <button id="next-year" class="year-arrow">&rarr;</button>
     </div>
 
-    <div class="timeline-label right">Heute</div>
+    <div class="timeline-label right">2065</div>
 
   </div>
 </div>
@@ -68,6 +68,12 @@
         <line x1="0" y1="5" x2="50" y2="5" stroke="var(--tram-color)" stroke-width="var(--line-weight)" stroke-dasharray="var(--line-dasharray)" />
       </svg>
       <span>Straßenbahn, elektrisch (durchgezogen)</span>
+    </div>
+    <div class="legend-item">
+      <svg width="50" height="10">
+        <line x1="0" y1="5" x2="50" y2="5" stroke="var(--nftram-color)" stroke-width="var(--line-weight)" stroke-dasharray="var(--line-dasharray)" />
+      </svg>
+      <span>Niederflur-Straßenbahn</span>
     </div>
     <div class="legend-item">
       <svg width="20" height="20">

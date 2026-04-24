@@ -93,6 +93,7 @@ osmMinimal.addTo(map);
 
 const overlays = {
     "Straßenbahn (historisch)": L.layerGroup(),
+    "Nf-Tram (Vorschlag)": L.layerGroup(),
     "U-Bahn (aktuell)": L.layerGroup(),
     "S-Bahn (aktuell)": L.layerGroup()
 };
@@ -151,6 +152,7 @@ const geocoder = L.Control.geocoder({
 // ---------------------
 
 let tramLayer = null;
+let nftramLayer = null;
 let ubahnLayer = null;
 let sbahnLayer = null;
 
@@ -164,6 +166,7 @@ let ubahnData = null;
 let sbahnData = null;
 let sbahnS5stadeData = null;
 let tramData = null;
+let nftramData = null;
 let landesgrenzeData = null;
 let landesgrenzeLayer = null;
 
@@ -207,6 +210,14 @@ fetch('data/Straßenbahn.geojson')
       tramData = data;
       updateMap(parseInt(slider.value));
   });
+
+// Load Nf-Tram data
+fetch('data/Nf-Tram_HH_Jusos.geojson')
+  .then(res => res.json())
+  .then(data => {
+      nftramData = data;
+      updateMap(parseInt(slider.value));
+  });  
 
 // Load Landesgrenze data
 fetch('data/Landesgrenze_HH.geojson')
@@ -263,6 +274,48 @@ function updateMap(year) {
 
         }).addTo(map);
     }
+
+    // Update Nf-Tram layer
+    if (nftramLayer) {
+        map.removeLayer(nftramLayer);
+    }
+    if (geoData) {
+        nftramLayer = L.geoJSON(geoData, {
+
+            filter: function(feature) {
+
+                const opened = feature.properties.year_opened;
+                const closed = feature.properties.year_closed || 9999;
+
+                return opened <= year && closed >= year;
+
+            },
+
+            style: {
+                color: getComputedStyle(document.documentElement).getPropertyValue('--nftram-color').trim() || "#EB6F10",
+                weight: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--line-weight')) || 3,
+                opacity: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--line-opacity')) || 1.0,
+                dashArray: getComputedStyle(document.documentElement).getPropertyValue('--line-dasharray').trim(),
+                lineJoin: 'round',
+                lineCap: 'round'
+            },
+            className: 'transit-line',
+            onEachFeature: function(feature, layer) {
+                var outlineWeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--line-outline-weight')) || 0;
+                if (outlineWeight > 0) {
+                    var outlineColor = getComputedStyle(document.documentElement).getPropertyValue('--line-outline-color').trim() || '#ffffff';
+                    var originalStyle = layer.options.style;
+                    layer.setStyle({
+                        color: originalStyle.color,
+                        weight: outlineWeight + (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--line-weight')) || 3)
+                    });
+                }
+            }
+
+        }).addTo(map);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Update U-Bahn layer
     overlays["U-Bahn (aktuell)"].clearLayers();
@@ -342,6 +395,146 @@ function updateMap(year) {
         overlays["S-Bahn (aktuell)"].addLayer(sbahnLayer);
     }
 
+    // Update Nf-Straßenbahn layer
+    overlays["Nf-Tram (Vorschlag)"].clearLayers();
+    if (nftramData) {
+        nftramLayer = L.geoJSON(nftramData, {
+            filter: function(feature) {
+                if (!feature.geometry) return false;
+
+                var geomType = feature.geometry.type;
+                if (geomType === "LineString" || geomType === "MultiLineString") {
+                    // Line features
+                    var bauE = feature.properties.Bau_E;
+                    var stillE = feature.properties.Stilllegung_E;
+
+                    // Helper function to parse year values
+                    function parseYear(val) {
+                        if (val === null || val === undefined || val === 'null' || val === 'NULL' || val === '') {
+                            return null;
+                        }
+                        return Number(val);
+                    }
+
+                    bauE = parseYear(bauE);
+                    stillE = parseYear(stillE);
+
+                    // Determine if visible
+                    var visible = false;
+                    if (bauE !== null && year >= bauE && (stillE === null || year < stillE)) {
+                        visible = true; // Electrified period
+                    }
+                    return visible;
+                } else if (geomType === "Point") {
+                    // Point features (Wendeschleife, Betriebshof) - show if no temporal properties or within time range
+                    var bau = feature.properties.Bau || feature.properties.bau || feature.properties.BAU;
+                    var still = feature.properties.Stilllegung || feature.properties.stilllegung || feature.properties.STILLLEGUNG;
+
+                    function parseYear(val) {
+                        if (val === null || val === undefined || val === 'null' || val === 'NULL' || val === '') {
+                            return null;
+                        }
+                        return Number(val);
+                    }
+
+                    bau = parseYear(bau);
+                    still = parseYear(still);
+
+                    // If no temporal properties, always show; otherwise check time range
+                    var visible = true;
+                    if (bau !== null || still !== null) {
+                        visible = (bau === null || year >= bau) && (still === null || year < still);
+                    }
+                    return visible;
+                }
+                return false;
+            },
+            style: function(feature) {
+                var year = parseInt(slider.value);
+                var geomType = feature.geometry.type;
+
+                if (geomType === "LineString" || geomType === "MultiLineString") {
+                    var bauE = feature.properties.Bau_E;
+
+                    function parseYear(val) {
+                        if (val === null || val === undefined || val === 'null' || val === 'NULL' || val === '') {
+                            return null;
+                        }
+                        return Number(val);
+                    }
+
+                    bauE = parseYear(bauE);
+
+                    var isPferdebahn = false;
+                    var dashArray = isPferdebahn ? getComputedStyle(document.documentElement).getPropertyValue('--line-dasharray-pferdebahn').trim() : getComputedStyle(document.documentElement).getPropertyValue('--line-dasharray').trim();
+
+                    return {
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--nftram-color').trim() || "#EB6F10",
+                        weight: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--line-weight')) || 4,
+                        opacity: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--line-opacity')) || 1.0,
+                        dashArray: dashArray,
+                        lineJoin: 'round',
+                        lineCap: 'round'
+                    };
+                }
+            },
+            pointToLayer: function(feature, latlng) {
+                var type = feature.properties.Type || feature.properties.type || feature.properties.TYPE;
+                if (type === "Wendeschleife" || type === "wendeschleife") {
+                    var marker = L.circleMarker(latlng, {
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--wendeschleife-color').trim() || "#f36078",
+                        weight: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--wendeschleife-weight').trim()) || 1,
+                        fillColor: getComputedStyle(document.documentElement).getPropertyValue('--wendeschleife-color').trim() || "#f36078",
+                        fillOpacity: 0.8,
+                        radius: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--wendeschleife-radius').trim()) || 8
+                    });
+                    marker.bindTooltip("Wendeschleife");
+                    return marker;
+                } else if (type === "Betriebshof" || type === "betriebshof") {
+                    var marker = L.circleMarker(latlng, {
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--betriebshof-color').trim() || "#646EFA",
+                        weight: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--betriebshof-weight').trim()) || 4,
+                        fillColor: getComputedStyle(document.documentElement).getPropertyValue('--betriebshof-color').trim() || "#646EFA",
+                        fillOpacity: 0.8,
+                        radius: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--betriebshof-radius').trim()) || 10
+                    });
+                    marker.bindTooltip("Betriebshof");
+                    return marker;
+                }
+                return L.marker(latlng);
+            },
+            onEachFeature: function(feature, layer) {
+                var geomType = feature.geometry.type;
+                if (geomType === "LineString" || geomType === "MultiLineString") {
+                    var bauE = feature.properties.Bau_E;
+                    var stillE = feature.properties.Stilllegung_E;
+
+                    function parseYear(val) {
+                        if (val === null || val === undefined || val === 'null' || val === 'NULL' || val === '') {
+                            return null;
+                        }
+                        return Number(val);
+                    }
+
+                    bauE = parseYear(bauE);
+                    stillE = parseYear(stillE);
+
+                    var tooltipText = "";
+                    if (bauE !== null) {
+                        if (tooltipText) tooltipText += "<br>";
+                        tooltipText += "Niederflur-Straßenbahn";
+                        if (bauE) tooltipText += " von " + bauE;
+                        if (stillE) tooltipText += " – " + stillE;
+                    }
+
+                    layer.bindTooltip(tooltipText);
+                }
+            },
+            className: 'transit-line'
+        });
+        overlays["Nf-Tram (Vorschlag)"].addLayer(nftramLayer);
+    }
+
     // Update Straßenbahn layer
     overlays["Straßenbahn (historisch)"].clearLayers();
     if (tramData) {
@@ -378,6 +571,11 @@ function updateMap(year) {
                     if (bauE !== null && year >= bauE && (stillE === null || year < stillE)) {
                         visible = true; // Electrified period
                     }
+                    // Muss wieder gelöscht werden! NUR ZUM TEST -->
+                    if (year > 2000) {
+                        visible = false; // Electrified period
+                    }
+                    // --> bis hier löschen
                     return visible;
                 } else if (geomType === "Point") {
                     // Point features (Wendeschleife, Betriebshof) - show if no temporal properties or within time range
