@@ -134,7 +134,7 @@ html, body {
   font-family: 'Unbounded', sans-serif;
   font-weight: 500; /* fette Überschrift */
   letter-spacing: 0.4px;
-  font-size: 22px; text-decoration: underline #ef476f;  text-decoration-thickness: 0px; text-underline-offset: 3px;
+  font-size: 22px; 
   color: var(--ui-surface_text);
   margin: 1px 0;
 }
@@ -143,7 +143,7 @@ html, body {
   font-family: 'Raleway', sans-serif;
   font-weight: 600; /* fette Überschrift */
   letter-spacing: 0.1px;
-  font-size: 18px; text-decoration: underline #ef476f;  text-decoration-thickness: 0px; text-underline-offset: 3px;
+  font-size: 18px;
   color: var(--ui-secondary);
   margin: 2px 0 0 0;
 }
