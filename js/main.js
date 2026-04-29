@@ -125,7 +125,7 @@ if (layersControlContainer) {
 // Set Minimal as active by default
 osmMinimal.addTo(map);
 
-// Add only Straßenbahn overlays by default
+// Add only Straßenbahn overlays by default // Festlegen, welche Layers beim Start zu sehen sind.
 overlays["Straßenbahn (historisch)"].addTo(map);
 overlays["Nf-Tram (Vorschlag)"].addTo(map);
 
