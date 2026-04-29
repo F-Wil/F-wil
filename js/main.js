@@ -93,7 +93,7 @@ osmMinimal.addTo(map);
 
 const overlays = {
     "Straßenbahn (historisch)": L.layerGroup(),
-    "Nf-Tram (Vorschlag)": L.layerGroup(),
+    "Zukunftstram (Vorschlag)": L.layerGroup(),
     "U-Bahn (aktuell)": L.layerGroup(),
     "S-Bahn (aktuell)": L.layerGroup()
 };
@@ -127,7 +127,6 @@ osmMinimal.addTo(map);
 
 // Add only Straßenbahn overlays by default
 overlays["Straßenbahn (historisch)"].addTo(map);
-overlays["Nf-Tram (Vorschlag)"].addTo(map);
 
 
 // ---------------------
@@ -397,7 +396,7 @@ function updateMap(year) {
     }
 
     // Update Nf-Straßenbahn layer
-    overlays["Nf-Tram (Vorschlag)"].clearLayers();
+    overlays["Zukunftstram (Vorschlag)"].clearLayers();
     if (nftramData) {
         nftramLayer = L.geoJSON(nftramData, {
             filter: function(feature) {
@@ -425,6 +424,9 @@ function updateMap(year) {
                     if (bauE !== null && year >= bauE && (stillE === null || year < stillE)) {
                         visible = true; // Electrified period
                     }
+                    // Force visibility for all years to true
+                    visible = true;
+                    // 
                     return visible;
                 } else if (geomType === "Point") {
                     // Point features (Wendeschleife, Betriebshof) - show if no temporal properties or within time range
@@ -533,7 +535,7 @@ function updateMap(year) {
             },
             className: 'transit-line'
         });
-        overlays["Nf-Tram (Vorschlag)"].addLayer(nftramLayer);
+        overlays["Zukunftstram (Vorschlag)"].addLayer(nftramLayer);
     }
 
     // Update Straßenbahn layer
