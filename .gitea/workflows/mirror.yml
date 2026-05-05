@@ -1,0 +1,40 @@
+name: Sync GitHub → Codeberg
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: JOG_forgejo-runner
+
+    steps:
+      - name: Sync branch to Codeberg
+        shell: bash
+        env:
+          GITHUB_REPO:    ${{ secrets.NETZ_GITHUB_REPO }}
+          CODEBERG_REPO:  ${{ secrets.NETZ_CODEBERG_REPO }}
+          CODEBERG_TOKEN: ${{ secrets.CODEBERG_TOKEN }}
+          BRANCH:         main
+        run: |
+          set -euo pipefail
+
+          CODEBERG_AUTH_URL="${CODEBERG_REPO/https:\/\//https://git:${CODEBERG_TOKEN}@}"
+
+          WORKDIR=$(mktemp -d)
+          trap 'rm -rf "$WORKDIR"' EXIT
+
+          echo "→ Klone GitHub-Branch '$BRANCH'..."
+          git clone --single-branch --branch "$BRANCH" \
+            "$GITHUB_REPO" "$WORKDIR/repo"
+
+          cd "$WORKDIR/repo"
+
+          echo "→ Codeberg als Remote hinzufügen..."
+          git remote add codeberg "$CODEBERG_AUTH_URL"
+
+          echo "→ Pushe nur neue Commits nach Codeberg..."
+          git push codeberg "$BRANCH:$BRANCH"
+
+          echo "✓ Sync abgeschlossen."
