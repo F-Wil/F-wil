@@ -24,6 +24,7 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ secrets.NETZ_DEPLOY_HOST }} >> ~/.ssh/known_hosts
           rsync -avz --delete \
+            --exclude='.gitea/' \
             -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
-            ./public/ \
+            ./ \
             ${{ secrets.NETZ_DEPLOY_USER }}@${{ secrets.NETZ_DEPLOY_HOST }}:${{ secrets.NETZ_DEPLOY_PATH }}/
