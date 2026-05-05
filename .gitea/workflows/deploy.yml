@@ -1,0 +1,29 @@
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: JOG_forgejo-runner
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Abhängigkeiten installieren
+        run: |
+          apt-get update -q
+          apt-get install -y rsync wget
+
+      - name: Auf Webserver übertragen
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.NETZ_SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.NETZ_DEPLOY_HOST }} >> ~/.ssh/known_hosts
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
+            ./public/ \
+            ${{ secrets.NETZ_DEPLOY_USER }}@${{ secrets.NETZ_DEPLOY_HOST }}:${{ secrets.NETZ_DEPLOY_PATH }}/
