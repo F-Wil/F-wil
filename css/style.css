@@ -310,7 +310,7 @@ html, body {
 /* Jahresanzeige groß */
 #year-display {
   position: absolute;
-  z-indexXXX: 10;
+  z-index: 10;
   top: -55px;
   transform: translateX(-50%);
   font-size: 26px;
@@ -412,7 +412,7 @@ html, body {
   background: var(--ui-bg-muted);
   color: var(--ui-surface_text);
   cursor: pointer;
-  transition: 
+  transition: background 0.2s;
   position: relative;
 }
 

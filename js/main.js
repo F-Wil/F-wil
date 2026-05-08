@@ -425,7 +425,7 @@ function updateMap(year) {
                         visible = true; // Electrified period
                     }
                     // Force visibility for all years to true
-                    visible = true;
+                    // visible = true;
                     // 
                     return visible;
                 } else if (geomType === "Point") {
@@ -568,16 +568,16 @@ function updateMap(year) {
 
                     // Determine if visible
                     var visible = false;
-                    if (bauPf !== null && year >= bauPf && (stillPf === null || year < stillPf)) {
+                    if (bauPf !== null && year >= bauPf && year < stillPf) {
                         visible = true; // Pferdebahn period
                     }
-                    if (bauE !== null && year >= bauE && (stillE === null || year < stillE)) {
+                    if (bauE !== null && year >= bauE && year < stillE) {
                         visible = true; // Electrified period
                     }
                     // Muss wieder gelöscht werden! NUR ZUM TEST -->
-                    if (year > 2000) {
-                        visible = false; // Electrified period
-                    }
+ //                   if (year > 2000) {
+ //                       visible = false; // Electrified period
+ //                   }
                     // --> bis hier löschen
                     return visible;
                 } else if (geomType === "Point") {
