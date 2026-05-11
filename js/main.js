@@ -424,9 +424,9 @@ function updateMap(year) {
                     if (bauE !== null && year >= bauE && (stillE === null || year < stillE)) {
                         visible = true; // Electrified period
                     }
-                    // Force visibility for all years to true
-                    // visible = true;
-                    // 
+                    // Force visibility for all years to true -->
+                    visible = true;
+                    // --> ENDE
                     return visible;
                 } else if (geomType === "Point") {
                     // Point features (Wendeschleife, Betriebshof) - show if no temporal properties or within time range
@@ -574,7 +574,7 @@ function updateMap(year) {
                     if (bauE !== null && year >= bauE && year < stillE) {
                         visible = true; // Electrified period
                     }
-                    // Muss wieder gelöscht werden! NUR ZUM TEST -->
+                    // ZUM TEST: setzt alle alten Tram-Strecken auf unsichtbar nach 2000 -->
  //                   if (year > 2000) {
  //                       visible = false; // Electrified period
  //                   }
