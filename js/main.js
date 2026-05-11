@@ -452,60 +452,7 @@ function updateMap(year) {
                 }
                 return false;
             },
-            style: function(feature) {
-                var year = parseInt(slider.value);
-                var geomType = feature.geometry.type;
 
-                if (geomType === "LineString" || geomType === "MultiLineString") {
-                    var bauE = feature.properties.Bau_E;
-
-                    function parseYear(val) {
-                        if (val === null || val === undefined || val === 'null' || val === 'NULL' || val === '') {
-                            return null;
-                        }
-                        return Number(val);
-                    }
-
-                    bauE = parseYear(bauE);
-
-                    var isPferdebahn = false;
-                    var dashArray = isPferdebahn ? getComputedStyle(document.documentElement).getPropertyValue('--line-dasharray-pferdebahn').trim() : getComputedStyle(document.documentElement).getPropertyValue('--line-dasharray').trim();
-
-                    return {
-                        color: getComputedStyle(document.documentElement).getPropertyValue('--nftram-color').trim() || "#EB6F10",
-                        weight: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--line-weight')) || 4,
-                        opacity: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--line-opacity')) || 1.0,
-                        dashArray: dashArray,
-                        lineJoin: 'round',
-                        lineCap: 'round'
-                    };
-                }
-            },
-            pointToLayer: function(feature, latlng) {
-                var type = feature.properties.Type || feature.properties.type || feature.properties.TYPE;
-                if (type === "Wendeschleife" || type === "wendeschleife") {
-                    var marker = L.circleMarker(latlng, {
-                        color: getComputedStyle(document.documentElement).getPropertyValue('--wendeschleife-color').trim() || "#f36078",
-                        weight: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--wendeschleife-weight').trim()) || 1,
-                        fillColor: getComputedStyle(document.documentElement).getPropertyValue('--wendeschleife-color').trim() || "#f36078",
-                        fillOpacity: 0.8,
-                        radius: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--wendeschleife-radius').trim()) || 8
-                    });
-                    marker.bindTooltip("Wendeschleife");
-                    return marker;
-                } else if (type === "Betriebshof" || type === "betriebshof") {
-                    var marker = L.circleMarker(latlng, {
-                        color: getComputedStyle(document.documentElement).getPropertyValue('--betriebshof-color').trim() || "#646EFA",
-                        weight: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--betriebshof-weight').trim()) || 4,
-                        fillColor: getComputedStyle(document.documentElement).getPropertyValue('--betriebshof-color').trim() || "#646EFA",
-                        fillOpacity: 0.8,
-                        radius: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--betriebshof-radius').trim()) || 10
-                    });
-                    marker.bindTooltip("Betriebshof");
-                    return marker;
-                }
-                return L.marker(latlng);
-            },
             onEachFeature: function(feature, layer) {
                 var geomType = feature.geometry.type;
                 if (geomType === "LineString" || geomType === "MultiLineString") {
@@ -574,7 +521,7 @@ function updateMap(year) {
                     if (bauE !== null && year >= bauE && year < stillE) {
                         visible = true; // Electrified period
                     }
-                    // ZUM TEST: setzt alle alten Tram-Strecken auf unsichtbar nach 2000 -->
+                    // Muss wieder gelöscht werden! NUR ZUM TEST -->
  //                   if (year > 2000) {
  //                       visible = false; // Electrified period
  //                   }
